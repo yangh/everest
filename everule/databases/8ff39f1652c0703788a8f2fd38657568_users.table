@@ -1,0 +1,22 @@
+(dp1
+S'email'
+p2
+S'CHAR(32)'
+p3
+sS'fullname'
+p4
+S'CHAR(32)'
+p5
+sS'id'
+p6
+S'INTEGER PRIMARY KEY AUTOINCREMENT'
+p7
+sS'rule'
+p8
+S'REFERENCES rules(id) ON DELETE CASCADE'
+p9
+sS'name'
+p10
+S'CHAR(32)'
+p11
+s.
