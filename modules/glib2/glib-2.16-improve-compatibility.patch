@@ -1,0 +1,76 @@
+diff -Nur glib-2.16.3/glib/gmacros.h glib-2.16.3n/glib/gmacros.h
+--- glib-2.16.3/glib/gmacros.h	2008-05-01 22:14:48.000000000 -0400
++++ glib-2.16.3n/glib/gmacros.h	2008-05-01 22:21:34.000000000 -0400
+@@ -115,8 +115,8 @@
+ #else
+ #define G_GNUC_WARN_UNUSED_RESULT
+ #endif /* __GNUC__ */
+-
+-#ifndef G_DISABLE_DEPRECATED
++/*cjacker modified it, because it really affect so many packages.
++#ifndef G_DISABLE_DEPRECATED*/
+ /* Wrap the gcc __PRETTY_FUNCTION__ and __FUNCTION__ variables with
+  * macros, so we can refer to them as strings unconditionally.
+  * usage not-recommended since gcc-3.0
+@@ -128,7 +128,7 @@
+ #define G_GNUC_FUNCTION         ""
+ #define G_GNUC_PRETTY_FUNCTION  ""
+ #endif  /* !__GNUC__ */
+-#endif  /* !G_DISABLE_DEPRECATED */
++/*#endif*/  /* !G_DISABLE_DEPRECATED */
+ 
+ #define G_STRINGIFY(macro_or_string)	G_STRINGIFY_ARG (macro_or_string)
+ #define	G_STRINGIFY_ARG(contents)	#contents
+diff -Nur glib-2.16.3/glib/gtestutils.h glib-2.16.3n/glib/gtestutils.h
+--- glib-2.16.3/glib/gtestutils.h	2008-04-07 23:47:29.000000000 -0400
++++ glib-2.16.3n/glib/gtestutils.h	2008-05-01 22:21:17.000000000 -0400
+@@ -28,34 +28,34 @@
+ typedef struct GTestSuite GTestSuite;
+ 
+ /* assertion API */
+-#define g_assert_cmpstr(s1, cmp, s2)    do { const char *__s1 = (s1), *__s2 = (s2); \
++#define g_assert_cmpstr(s1, cmp, s2)    G_STMT_START{do { const char *__s1 = (s1), *__s2 = (s2); \
+                                              if (g_strcmp0 (__s1, __s2) cmp 0) ; else \
+                                                g_assertion_message_cmpstr (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, \
+-                                                 #s1 " " #cmp " " #s2, __s1, #cmp, __s2); } while (0)
+-#define g_assert_cmpint(n1, cmp, n2)    do { gint64 __n1 = (n1), __n2 = (n2); \
++                                                 #s1 " " #cmp " " #s2, __s1, #cmp, __s2); } while (0);}G_STMT_END
++#define g_assert_cmpint(n1, cmp, n2)    G_STMT_START{do { gint64 __n1 = (n1), __n2 = (n2); \
+                                              if (__n1 cmp __n2) ; else \
+                                                g_assertion_message_cmpnum (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, \
+-                                                 #n1 " " #cmp " " #n2, __n1, #cmp, __n2, 'i'); } while (0)
+-#define g_assert_cmpuint(n1, cmp, n2)   do { guint64 __n1 = (n1), __n2 = (n2); \
++                                                 #n1 " " #cmp " " #n2, __n1, #cmp, __n2, 'i'); } while (0);}G_STMT_END
++#define g_assert_cmpuint(n1, cmp, n2)   G_STMT_START{do { guint64 __n1 = (n1), __n2 = (n2); \
+                                              if (__n1 cmp __n2) ; else \
+                                                g_assertion_message_cmpnum (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, \
+-                                                 #n1 " " #cmp " " #n2, __n1, #cmp, __n2, 'i'); } while (0)
+-#define g_assert_cmphex(n1, cmp, n2)    do { guint64 __n1 = (n1), __n2 = (n2); \
++                                                 #n1 " " #cmp " " #n2, __n1, #cmp, __n2, 'i'); } while (0);}G_STMT_END
++#define g_assert_cmphex(n1, cmp, n2)    G_STMT_START{do { guint64 __n1 = (n1), __n2 = (n2); \
+                                              if (__n1 cmp __n2) ; else \
+                                                g_assertion_message_cmpnum (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, \
+-                                                 #n1 " " #cmp " " #n2, __n1, #cmp, __n2, 'x'); } while (0)
+-#define g_assert_cmpfloat(n1,cmp,n2)    do { long double __n1 = (n1), __n2 = (n2); \
++                                                 #n1 " " #cmp " " #n2, __n1, #cmp, __n2, 'x'); } while (0);}G_STMT_END
++#define g_assert_cmpfloat(n1,cmp,n2)    G_STMT_START{do { long double __n1 = (n1), __n2 = (n2); \
+                                              if (__n1 cmp __n2) ; else \
+                                                g_assertion_message_cmpnum (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, \
+-                                                 #n1 " " #cmp " " #n2, __n1, #cmp, __n2, 'f'); } while (0)
++                                                 #n1 " " #cmp " " #n2, __n1, #cmp, __n2, 'f'); } while (0);}G_STMT_END
+ #ifdef G_DISABLE_ASSERT
+-#define g_assert_not_reached()          do { (void) 0; } while (0)
+-#define g_assert(expr)                  do { (void) 0; } while (0)
++#define g_assert_not_reached()          G_STMT_START{do { (void) 0; } while (0);}G_STMT_END
++#define g_assert(expr)                  G_STMT_START{do { (void) 0; } while (0);}G_STMT_END
+ #else /* !G_DISABLE_ASSERT */
+-#define g_assert_not_reached()          do { g_assertion_message (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, NULL); } while (0)
+-#define g_assert(expr)                  do { if G_LIKELY (expr) ; else \
++#define g_assert_not_reached()          G_STMT_START{do { g_assertion_message (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, NULL); } while (0);}G_STMT_END
++#define g_assert(expr)                  G_STMT_START{do { if G_LIKELY (expr) ; else \
+                                                g_assertion_message_expr (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, \
+-                                                 #expr); } while (0)
++                                                 #expr); } while (0);}G_STMT_END
+ #endif /* !G_DISABLE_ASSERT */
+ 
+ int     g_strcmp0                       (const char     *str1,

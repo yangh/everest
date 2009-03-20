@@ -1,0 +1,35 @@
+--- glib-2.11.1/Makefile.in.libdir	2006-05-15 12:23:18.000000000 -0400
++++ glib-2.11.1/Makefile.in	2006-05-25 15:03:13.000000000 -0400
+@@ -287,13 +287,13 @@
+ 	gtk-doc.make
+ 
+ 
+-configexecincludedir = $(libdir)/glib-2.0/include
++configexecincludedir = $(prefix)$(libdir)/glib-2.0/include
+ 
+ CONFIGURE_DEPENDENCIES = acglib.m4
+ 
+ BUILT_SOURCES = stamp-gc-h #note: not glibconfig.h
+ 
+-pkgconfigdir = $(libdir)/pkgconfig
++pkgconfigdir = $(prefix)$(libdir)/pkgconfig
+ pkgconfig_DATA = glib-2.0.pc gobject-2.0.pc gmodule-2.0.pc gmodule-export-2.0.pc gmodule-no-export-2.0.pc gthread-2.0.pc
+ 
+ # install mkinstalldirs for glib-gettextize's benefit
+--- glib-2.11.1/glib-2.0.pc.in.libdir	2006-05-25 15:04:08.000000000 -0400
++++ glib-2.11.1/glib-2.0.pc.in	2006-05-25 15:06:06.000000000 -0400
+@@ -2,6 +2,7 @@
+ exec_prefix=@exec_prefix@
+ libdir=@libdir@
+ includedir=@includedir@
++configexecincludedir=@prefix@@libdir@/glib-2.0/include
+ 
+ glib_genmarshal=glib-genmarshal
+ gobject_query=gobject-query
+@@ -11,5 +12,5 @@
+ Description: C Utility Library
+ Version: @VERSION@
+ Libs: -L${libdir} -lglib-2.0 @INTLLIBS@ @ICONV_LIBS@
+-Cflags: -I${includedir}/glib-2.0 -I${libdir}/glib-2.0/include 
++Cflags: -I${includedir}/glib-2.0 -I${configexecincludedir}
+ 
