@@ -1,0 +1,42 @@
+(dp1
+S'upstream_uri'
+p2
+S'CHAR(32)'
+p3
+sS'name'
+p4
+S'CHAR(32)'
+p5
+sS'tarball_type'
+p6
+S'REFERENCES tarballs(id) ON DELETE CASCADE'
+p7
+sS'mversion'
+p8
+S'CHAR(32)'
+p9
+sS'gfwed'
+p10
+S'CHAR(1)'
+p11
+sS'uri'
+p12
+S'CHAR(32)'
+p13
+sS'tarball_id'
+p14
+S'REFERENCES tarballs(id) ON DELETE CASCADE'
+p15
+sS'module_id'
+p16
+S'REFERENCES modules(id) ON DELETE CASCADE'
+p17
+sS'id'
+p18
+S'INTEGER PRIMARY KEY AUTOINCREMENT'
+p19
+sS'uri_type'
+p20
+S'REFERENCES upstream_uries(id) ON DELETE CASCADE'
+p21
+s.

@@ -1,22 +1,30 @@
 (dp1
-S'release'
+S'name'
 p2
 S'CHAR(32)'
 p3
-sS'owner_id'
+sS'mversion'
 p4
-S'REFERENCES users(id) ON DELETE CASCADE'
+S'CHAR(32)'
 p5
-sS'version'
+sS'srcname'
 p6
 S'CHAR(32)'
 p7
-sS'id'
+sS'version'
 p8
-S'INTEGER PRIMARY KEY AUTOINCREMENT'
+S'CHAR(32)'
 p9
-sS'name'
+sS'release'
 p10
 S'CHAR(32)'
 p11
+sS'id'
+p12
+S'INTEGER PRIMARY KEY AUTOINCREMENT'
+p13
+sS'owner_id'
+p14
+S'REFERENCES users(id) ON DELETE CASCADE'
+p15
 s.

@@ -1,0 +1,22 @@
+(dp1
+S'predefined'
+p2
+S'CHAR(1)'
+p3
+sS'prefix'
+p4
+S'CHAR(32)'
+p5
+sS'id'
+p6
+S'INTEGER PRIMARY KEY AUTOINCREMENT'
+p7
+sS'name'
+p8
+S'CHAR(32)'
+p9
+sS'uri'
+p10
+S'CHAR(32)'
+p11
+s.
