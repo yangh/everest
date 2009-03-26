@@ -54,7 +54,7 @@ db.define_table ('sources',
                        SQLField ('last_check_time', 'datetime')
                        )
 
-db.define_table ('upstreames',
+db.define_table ('upstreamse',
                        SQLField ('module_id', db.modules),
                        SQLField ('source_id', db.sources),
                        SQLField ('version'),
@@ -80,5 +80,5 @@ db.sources.module_id.requires = IS_IN_DB(db,'modules.id','modules.name')
 db.sources.tarball_type.requires = IS_IN_DB(db,'tarballs.id','tarballs.name')
 db.sources.uri_type.requires = IS_IN_DB(db,'upstream_uries.id','upstream_uries.name')
 
-db.upstreames.module_id.requires = IS_IN_DB(db,'modules.id','modules.name')
-db.upstreames.source_id.requires = IS_IN_DB(db,'sources.id','sources.name')
+db.upstreamse.module_id.requires = IS_IN_DB(db,'modules.id','modules.name')
+db.upstreamse.source_id.requires = IS_IN_DB(db,'sources.id','sources.name')

@@ -1,18 +1,23 @@
 {{extend 'layout.html'}}
 
-{{=rpms}}
+<h2>Overview</h2>
 
-<h2>Current Users</h2>
-{{=users}}
+<table name='modules'>
 
-<h2>Current Modules</h2>
-{{=modules}}
+<tr>
+  <th>Name</th>
+  <th>Version</th>
+  <th>Owner</th>
+</tr>
 
-<h2>Current Packages</h2>
-{{=packages}}
+{{ for mod in modules: }}
+<tr>
+  <td>
+    <a href="detail/{{=mod.modules.name}}">{{=mod.modules.name}}</a>
+  </td>
+  <td>{{=mod.modules.version}}</td>
+  <td>{{=mod.users.fullname}}</td>
+</tr>
+{{pass}}
 
-<h2>Current Sources</h2>
-{{=sources}}
-
-<h2>Current Upstreames</h2>
-{{=upstreames}}
+</table>

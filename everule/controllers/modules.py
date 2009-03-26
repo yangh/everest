@@ -18,19 +18,56 @@ def get_pkgs_list (module):
     return pkgs
 
 def index():
-    rpms = get_pkgs_list ('glib2')
-    modules = SQLTABLE (db ().select (db.modules.ALL))
-    users = SQLTABLE (db ().select (db.users.ALL))
-    packages = SQLTABLE (db ().select (db.packages.ALL))
-    sources = SQLTABLE (db ().select (db.sources.ALL))
-    upstreames = SQLTABLE (db ().select (db.upstreames.ALL))
+    #rpms = get_pkgs_list ('glib2')
+    #modules = SQLTABLE (db ().select (db.modules.ALL))
+    #users = SQLTABLE (db ().select (db.users.ALL))
+    #packages = SQLTABLE (db ().select (db.packages.ALL))
+    #sources = SQLTABLE (db ().select (db.sources.ALL))
+    #upstreamse = SQLTABLE (db ().select (db.upstreamse.ALL))
     
-    return dict (rpms = rpms,
-                    users = users, 
+    query = (db.modules.owner_id == db.users.id)
+    modules = db(query).select (db.modules.ALL,
+                                          db.users.ALL)
+    
+    return dict (#rpms = rpms,
+                    #users = users, 
                     modules = modules, 
+                    #packages = packages,
+                    #sources = sources,
+                    #upstreamse = upstreamse
+                    )
+
+def detail():
+    if (len (request.args) == 0):
+        redirect(URL(r=request,f='index'))
+    
+    mod = request.args[0]
+        
+    query = (db.modules.name == mod)
+    results = db (query).select (db.modules.ALL)
+    
+    if (len(results) == 0):
+        redirect(URL(r=request,f='index'))
+    
+    mod = results[0]
+    
+    print "Module for detail %s" % mod
+    
+    module = mod
+    query = (db.packages.module_id == mod['id'])
+    packages = db (query).select (db.packages.ALL)
+
+    query = (db.sources.module_id == mod['id'])
+    sources = db (query).select (db.sources.ALL)
+
+    query = (db.upstreamse.module_id == mod['id'])
+    upstreamse = db (query).select (db.upstreamse.ALL)
+    
+    return dict (module = module,
                     packages = packages,
                     sources = sources,
-                    upstreames = upstreames)
+                    upstreamse = upstreamse
+                    )
 
 def add_user():
     form = SQLFORM (db.users)
@@ -58,7 +95,7 @@ def check_upstream():
 #    src['tarball'] = 'tar.bz2'
 #    src['uri'] =  'http://ftp.gnome.org/pub/GNOME/sources/%{name}/%{mversion}/%{name}-%{version}.%{tarball}'
     
-    upstreams = []
+    upstreamse = []
     message = "Check for upstream..."
     
     query = (db.sources.auto_check_upstream == True) \
@@ -97,16 +134,16 @@ def check_upstream():
             message = T("Cann't import SourceURI")
 
         if suri:
-            upstreams = suri.get_upstream ()
-            for up in upstreams:
-                query = (db.upstreames.source_id == up['source_id']) \
-                            & (db.upstreames.version == up['version'])
-                matches = db (query).select (db.upstreames.ALL)
+            upstreamse = suri.get_upstream ()
+            for up in upstreamse:
+                query = (db.upstreamse.source_id == up['source_id']) \
+                            & (db.upstreamse.version == up['version'])
+                matches = db (query).select (db.upstreamse.ALL)
                 if (len (matches)) == 0:
-                    db.upstreames.insert (module_id = up['module_id'],
+                    db.upstreamse.insert (module_id = up['module_id'],
                                                   source_id = up['source_id'],
                                                   version = up['version'],
                                                   uri = up['uri'],
                                                   timestamp = up['timestamp'])
     
-    return dict (message=message, upstreames = upstreams)
+    return dict (message=message, upstreamse = upstreamse)
