@@ -7,13 +7,13 @@ sS'prefix'
 p4
 S'CHAR(32)'
 p5
-sS'id'
-p6
-S'INTEGER PRIMARY KEY AUTOINCREMENT'
-p7
 sS'uri'
-p8
+p6
 S'CHAR(32)'
+p7
+sS'id'
+p8
+S'INTEGER PRIMARY KEY AUTOINCREMENT'
 p9
 sS'name'
 p10

@@ -1,7 +1,8 @@
 response.menu=[
                        ['Summary',False,URL(r=request,f='index')],
                        ['Add User',False,URL(r=request,f='add_user')],
-                       ['Add Module',False,URL(r=request,f='add_module')]
+                       ['Add Module',False,URL(r=request,f='add_module')],
+                       ['Check Upstream',False,URL(r=request,f='check_upstream')]
                       ]
 
 def get_pkgs_list (module):
@@ -47,5 +48,53 @@ def add_module():
     
     return dict (form = form, modules = modules)
 
-def check_upstream ():
-    return dict ()
+def check_upstream():
+    uri=''
+    
+#    src = {}
+#    src['name'] = 'glib'
+#    src['version'] = '2.18.2'
+#    src['mversion'] = '2.18'
+#    src['tarball'] = 'tar.bz2'
+#    src['uri'] =  'http://ftp.gnome.org/pub/GNOME/sources/%{name}/%{mversion}/%{name}-%{version}.%{tarball}'
+    
+    upstreams = []
+    message = "Check for upstream..."
+    
+    query = (db.sources.auto_check_upstream == True) \
+                & (db.sources.gfwed == False)
+    rows = db (query).select(db.sources.ALL)
+    for row in rows:
+        mid = row ['module_id']
+        query = (db.modules.id == row ['module_id']) \
+                    & (db.tarballs.id == row['tarball_type'])
+        mods = db(query).select(db.modules.version, db.tarballs.suffix)
+        #print row
+        #print mods[0]
+        mod = mods[0]
+        src = {}
+        src['name'] = row['name']
+        src['version'] = mod.modules.version
+        src['mversion'] = row['mversion']
+        src['tarball'] = mod.tarballs.suffix
+        src['uri'] =  row['uri']
+        
+        # Check if is predefined URI
+        query = (db.upstream_uries.id == row['uri_type'])
+        uris = db (query).select (db.upstream_uries.ALL)
+        uuri = uris[0]
+        if (uuri.predefined == True):
+            src['uri'] = uuri.uri
+        #print src
+        
+        suri = None
+        try:
+            from applications.everule.modules.RPMSpec import SourceURI
+            suri = SourceURI (src['uri'], src)
+        except:
+            message = T("Cann't import SourceURI")
+
+        if suri:
+            upstreams = suri.get_upstream ()            
+    
+    return dict (message=message, upstreames = upstreams)
