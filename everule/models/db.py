@@ -58,6 +58,7 @@ db.define_table ('upstreames',
                        SQLField ('module_id', db.modules),
                        SQLField ('source_id', db.sources),
                        SQLField ('version'),
+                       SQLField ('uri', 'text'),
                        SQLField ('timestamp', 'datetime')
                        )
 

@@ -73,6 +73,8 @@ def check_upstream():
         #print mods[0]
         mod = mods[0]
         src = {}
+        src['id'] = row['id']
+        src['module_id'] = row['module_id']
         src['name'] = row['name']
         src['version'] = mod.modules.version
         src['mversion'] = row['mversion']
@@ -95,6 +97,16 @@ def check_upstream():
             message = T("Cann't import SourceURI")
 
         if suri:
-            upstreams = suri.get_upstream ()            
+            upstreams = suri.get_upstream ()
+            for up in upstreams:
+                query = (db.upstreames.source_id == up['source_id']) \
+                            & (db.upstreames.version == up['version'])
+                matches = db (query).select (db.upstreames.ALL)
+                if (len (matches)) == 0:
+                    db.upstreames.insert (module_id = up['module_id'],
+                                                  source_id = up['source_id'],
+                                                  version = up['version'],
+                                                  uri = up['uri'],
+                                                  timestamp = up['timestamp'])
     
     return dict (message=message, upstreames = upstreams)

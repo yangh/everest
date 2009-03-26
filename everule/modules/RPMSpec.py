@@ -46,6 +46,13 @@ class SourceURI:
         
         return ava
     
+    def get_timestamp (self):
+        import datetime
+        
+        now = datetime.datetime.now ()
+        
+        return now.strftime("%Y-%m-%d %H:%M")
+    
     def get_upstream (self):
          import string
          
@@ -66,8 +73,11 @@ class SourceURI:
              print "Upstream: %s" % uri
              if self.remote_available (uri):
                  up = {}
+                 up['module_id'] = src['module_id']
+                 up['source_id'] = src['id']
                  up['version'] = src['version']
                  up['uri'] = uri
+                 up['timestamp'] = self.get_timestamp()
                  ups.append (up)
              else:
                  break
