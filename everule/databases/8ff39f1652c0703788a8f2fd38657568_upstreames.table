@@ -1,0 +1,22 @@
+(dp1
+S'source_id'
+p2
+S'REFERENCES sources(id) ON DELETE CASCADE'
+p3
+sS'module_id'
+p4
+S'REFERENCES modules(id) ON DELETE CASCADE'
+p5
+sS'version'
+p6
+S'CHAR(32)'
+p7
+sS'id'
+p8
+S'INTEGER PRIMARY KEY AUTOINCREMENT'
+p9
+sS'timestamp'
+p10
+S'TIMESTAMP'
+p11
+s.

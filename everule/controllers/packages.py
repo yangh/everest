@@ -17,11 +17,19 @@ def get_pkgs_list (module):
     return pkgs
 
 def index():
-    pkgs = get_pkgs_list ('glib2')
+    rpms = get_pkgs_list ('glib2')
     modules = SQLTABLE (db ().select (db.modules.ALL))
     users = SQLTABLE (db ().select (db.users.ALL))
+    packages = SQLTABLE (db ().select (db.packages.ALL))
+    sources = SQLTABLE (db ().select (db.sources.ALL))
+    upstreames = SQLTABLE (db ().select (db.upstreames.ALL))
     
-    return dict(users = users, modules = modules, packages = pkgs)
+    return dict (rpms = rpms,
+                    users = users, 
+                    modules = modules, 
+                    packages = packages,
+                    sources = sources,
+                    upstreames = upstreames)
 
 def add_user():
     form = SQLFORM (db.users)
@@ -38,3 +46,6 @@ def add_module():
     modules = SQLTABLE (db ().select (db.modules.ALL))
     
     return dict (form = form, modules = modules)
+
+def check_upstream ():
+    return dict ()

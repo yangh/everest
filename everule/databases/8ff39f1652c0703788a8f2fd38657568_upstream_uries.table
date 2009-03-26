@@ -11,11 +11,11 @@ sS'id'
 p6
 S'INTEGER PRIMARY KEY AUTOINCREMENT'
 p7
-sS'name'
+sS'uri'
 p8
 S'CHAR(32)'
 p9
-sS'uri'
+sS'name'
 p10
 S'CHAR(32)'
 p11

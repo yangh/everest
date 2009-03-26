@@ -1,42 +1,50 @@
 (dp1
-S'upstream_uri'
+S'auto_check_upstream'
 p2
-S'CHAR(32)'
+S'CHAR(1)'
 p3
-sS'name'
+sS'upstream_uri'
 p4
 S'CHAR(32)'
 p5
-sS'tarball_type'
+sS'name'
 p6
-S'REFERENCES tarballs(id) ON DELETE CASCADE'
+S'CHAR(32)'
 p7
-sS'mversion'
+sS'tarball_type'
 p8
-S'CHAR(32)'
-p9
-sS'gfwed'
-p10
-S'CHAR(1)'
-p11
-sS'uri'
-p12
-S'CHAR(32)'
-p13
-sS'tarball_id'
-p14
 S'REFERENCES tarballs(id) ON DELETE CASCADE'
+p9
+sS'mversion'
+p10
+S'CHAR(32)'
+p11
+sS'gfwed'
+p12
+S'CHAR(1)'
+p13
+sS'uri'
+p14
+S'CHAR(32)'
 p15
-sS'module_id'
+sS'tarball_id'
 p16
-S'REFERENCES modules(id) ON DELETE CASCADE'
+S'REFERENCES tarballs(id) ON DELETE CASCADE'
 p17
-sS'id'
+sS'module_id'
 p18
-S'INTEGER PRIMARY KEY AUTOINCREMENT'
+S'REFERENCES modules(id) ON DELETE CASCADE'
 p19
-sS'uri_type'
+sS'last_check_time'
 p20
-S'REFERENCES upstream_uries(id) ON DELETE CASCADE'
+S'TIMESTAMP'
 p21
+sS'id'
+p22
+S'INTEGER PRIMARY KEY AUTOINCREMENT'
+p23
+sS'uri_type'
+p24
+S'REFERENCES upstream_uries(id) ON DELETE CASCADE'
+p25
 s.
