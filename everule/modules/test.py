@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
 from sh_utils import RPMModule
-from RPMSpec import *
 
 m = RPMModule ('glib2')
 print m.get_packages_list()
+
+from RPMSpec import *
 
 src = {}
 src['name']='glib'
@@ -18,3 +19,10 @@ suri = SourceURI('', src)
 uri = suri.parse_uri (uri)
 
 print uri
+
+from everest import *
+mods = evst_get_modules()
+print mods
+
+info = evst_get_module_info ('vte')
+print info

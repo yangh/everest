@@ -77,13 +77,43 @@ def add_user():
     
     return dict (form = form, users = users)
 
+def get_fsmodule_info():
+    info = ""
+    if len (request.args) == 0:
+        return info
+    
+    mod = request.args[0]
+    try:
+        from applications.everule.modules.everest import evst_get_module_info
+        info = evst_get_module_info (mod)
+        #info = "vte,0.17.4,4"
+        print info
+    except:
+        print "Cann't get fsmodule info for %s" % mod
+    
+    return info
+
 def add_module():
+    fsmods = []
+    try:
+        from applications.everule.modules.everest import evst_get_modules
+        fsmods = evst_get_modules ()
+    except:
+        fsmods.append ("Cann't import RPMModule")
+
     form = SQLFORM (db.modules)
     if form.accepts (request.vars, session):
         response.flash = 'New module added!'
     modules = SQLTABLE (db ().select (db.modules.ALL))
     
-    return dict (form = form, modules = modules)
+    dbmods = db().select (db.modules.name)
+    for m in dbmods:
+        print "Check if %s in fsmods" % m['name']
+        if m['name'] in fsmods:
+            fsmods.remove(m['name'])
+            print "Remove %s from fsmods" % m['name']
+    
+    return dict (form = form, modules = modules, fsmods = fsmods)
 
 def check_upstream():
     uri=''

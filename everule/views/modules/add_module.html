@@ -1,7 +1,48 @@
 {{extend 'layout.html'}}
 
+<script type="text/javascript">
+<!--
+function UpdateModuleInfo (msg) {
+    var feilds = ['modules_name', 'modules_version', 'modules_release'];
+    //document.getElementById('debug').value = msg;
+    values = msg.split(",", feilds.length);
+    for (i = 0; i < feilds.length; i ++) {
+        document.getElementById(feilds[i]).value = values [i];
+    }
+}
+
+function GetFSModuleInfo (u) {
+    var fsmod = document.getElementById('fsmodule').value;
+    
+    if (fsmod == '.')
+        return;
+
+    u = u + "/" + fsmod;
+    document.getElementById('debug').value = u;
+    
+    $.ajax ({type: "GET", url: u, data: "", success: UpdateModuleInfo});  
+}
+//--></script>
+
 <h1>Add module:</h1>
+
+<h2>Candidates</h2>
+<br>
+<form name='fsmods'>
+  <label for="fsmodule">Select one:</label>
+  <select id="fsmodule" onChange="GetFSModuleInfo ('{{=URL(r=request,f='get_fsmodule_info')}}');">
+      <option value=".">---({{=len(fsmods)}})---</option>
+      {{ for mod in fsmods: }}
+      <option value="{{=mod}}">{{=mod}}</option>
+      {{pass}}
+  </select>
+  <input id="debug" vaule=""/>
+</form>
+<br>
+
+<h2> Detail: </h2>
 {{=form}}
 
+<br>
 <h2>Current modules</h2>
 {{=modules}}
