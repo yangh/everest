@@ -4,6 +4,10 @@
 
 <dl>
   <dt>Name: {{=module.name}}</dt>
+  <dt>Version:</dt>
+  <dd> {{ =module.version }} </dd>
+  <dt>Release:</dt>
+  <dd> {{ =module.release }} </dd>
   <dt>Packages:</dt>
      {{ for pkg in packages: }}
     <dd> {{ =pkg.name }} </dd>

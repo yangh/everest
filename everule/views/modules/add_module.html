@@ -4,7 +4,6 @@
 <!--
 function UpdateModuleInfo (msg) {
     var feilds = ['modules_name', 'modules_version', 'modules_release'];
-    //document.getElementById('debug').value = msg;
     values = msg.split(",", feilds.length);
     for (i = 0; i < feilds.length; i ++) {
         document.getElementById(feilds[i]).value = values [i];
@@ -18,7 +17,6 @@ function GetFSModuleInfo (u) {
         return;
 
     u = u + "/" + fsmod;
-    document.getElementById('debug').value = u;
     
     $.ajax ({type: "GET", url: u, data: "", success: UpdateModuleInfo});  
 }
@@ -36,7 +34,9 @@ function GetFSModuleInfo (u) {
       <option value="{{=mod}}">{{=mod}}</option>
       {{pass}}
   </select>
+  <!--
   <input id="debug" vaule=""/>
+  -->
 </form>
 <br>
 

@@ -26,3 +26,6 @@ print mods
 
 info = evst_get_module_info ('vte')
 print info
+
+info = evst_get_module_packages('vte')
+print info

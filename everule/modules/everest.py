@@ -33,7 +33,7 @@ def evst_get_module_info (fsmod = None):
     ret = os.popen (cmd)
     lines = ret.readlines()
     
-    return lines[0:-1]
+    return lines[0][0:-1]
 
 def evst_get_module_packages (fsmod = None):
     pkgs = []
