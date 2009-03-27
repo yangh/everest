@@ -42,7 +42,7 @@ class SourceURI:
             f = urllib2.urlopen (req)
             ava = True
         except urllib2.URLError, e:
-            print e.code
+            print "Cann't open URL %s" % uristr
         
         return ava
     

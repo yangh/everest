@@ -37,6 +37,19 @@ def index():
                     #upstreamse = upstreamse
                     )
 
+def add_source():
+    if (len (request.args) == 0):
+        redirect(URL(r=request,f='index'))
+    
+    mod = request.args[0]
+
+    form = SQLFORM (db.sources)
+    if form.accepts (request.vars, session):
+        response.flash = 'New sources added!'
+    sources = SQLTABLE (db ().select (db.sources.ALL))
+    
+    return dict (form = form, sources = sources)
+
 def detail():
     if (len (request.args) == 0):
         redirect(URL(r=request,f='index'))
@@ -115,6 +128,36 @@ def add_module():
     
     return dict (form = form, modules = modules, fsmods = fsmods)
 
+def reload_module_packages():
+    mid = -1
+    mname = ""
+    if len (request.args) > 0:
+        rows = db(db.modules.name == request.args[0]).select() 
+        if len (rows) > 0:
+            mname = request.args[0]
+            mid = rows[0]['id']
+            print "Reload pkgs for %s, %s" % (mname, mid)
+    else:
+        redirect(URL(r=request, f='index'))
+    
+    pkgs = []
+    try:
+        from applications.everule.modules.everest import evst_get_module_packages
+        pkgs = evst_get_module_packages (mname)
+        print pkgs
+    except:
+        print "Cann't get packages for %s" % mname  
+    rows = db(db.packages.module_id == mid).select()
+    opkgs = []
+    for r in rows:
+        opkgs.append (r['name'])
+    
+    for p in pkgs:
+        if p not in opkgs:
+            db.packages.insert (module_id = mid, name = p)
+    
+    redirect(URL(r=request, f='detail', args=[mname]))
+
 def check_upstream():
     uri=''
     
@@ -130,7 +173,21 @@ def check_upstream():
     
     query = (db.sources.auto_check_upstream == True) \
                 & (db.sources.gfwed == False)
+    check_for_module = False
+    if len (request.args) > 0:
+        rows = db(db.modules.name == request.args[0]).select() 
+        if len (rows) > 0:
+            mname = request.args[0]
+            mid = rows[0]['id']
+            print "check up for %s, %s" % (mname, mid)
+            check_for_module = True
+            query = query & (db.sources.module_id == mid)
+    
     rows = db (query).select(db.sources.ALL)
+    
+    if len (rows) == 0 and check_for_module:
+        redirect (URL(r=request, f='detail', args=[mname,]))
+    
     for row in rows:
         mid = row ['module_id']
         query = (db.modules.id == row ['module_id']) \
@@ -175,5 +232,7 @@ def check_upstream():
                                                   version = up['version'],
                                                   uri = up['uri'],
                                                   timestamp = up['timestamp'])
+    if check_for_module:
+        redirect (URL(r=request, f='detail', args=[mname,]))
     
     return dict (message=message, upstreamse = upstreamse)

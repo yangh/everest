@@ -33,4 +33,20 @@ def evst_get_module_info (fsmod = None):
     ret = os.popen (cmd)
     lines = ret.readlines()
     
-    return lines[0]
+    return lines[0:-1]
+
+def evst_get_module_packages (fsmod = None):
+    pkgs = []
+    if fsmod is None:
+        return pkgs 
+    
+    spec = EverestHome + "/modules/" + fsmod + "/" + fsmod + ".spec"
+    if os.access(spec, os.F_OK) == False:
+        return pkgs
+    
+    cmd = "rpm -q --qf '%{name}\n' --specfile " + "%s" % spec
+    ret = os.popen (cmd)
+    for line in ret.readlines():
+        pkgs.append (line[0:-1])
+    
+    return pkgs

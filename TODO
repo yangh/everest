@@ -1,0 +1,13 @@
+everule
+=======
+
+1. Import module from .src.rpm
+
+    extract .src.rpm,
+    import module view (module/package/sources/... info)
+    step by step?
+
+2. Update spec file with new upstream
+
+3. Build package
+

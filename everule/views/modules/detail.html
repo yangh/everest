@@ -8,16 +8,17 @@
      {{ for pkg in packages: }}
     <dd> {{ =pkg.name }} </dd>
     {{pass}}
+    <a href="../reload_module_packages/{{=module.name}}">Reload...</a>
   <dt>Sources:</dt>
     {{ for src in sources: }}
     <dd> {{ =src.name }} </dd>
     {{pass}}
+    <a href="../add_source/{{=module.name}}">Add...</a>
   <dt>Upstream:</dt>
     {{ for up in upstreamse: }}
     <dd> {{ =up.version }} </dd>
     {{pass}}
+    <a href="../check_upstream/{{=module.name}}">Recheck...</a>
 </dl>
 
 <hr>
-
-{{=BEAUTIFY(response._vars)}}
