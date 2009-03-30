@@ -1,28 +1,28 @@
 {{extend 'layout.html'}}
 
+<div id="info">
 <h1>{{=module.name}} detail info</h1>
 
 <dl>
   <dt>Name: {{=module.name}}</dt>
-  <dt>Version:</dt>
-  <dd> {{ =module.version }} </dd>
-  <dt>Release:</dt>
-  <dd> {{ =module.release }} </dd>
+  <dt>Version: {{ =module.version }}</dt>
+  <dt>Release: {{ =module.release }}</dt>
   <dt>Packages:</dt>
      {{ for pkg in packages: }}
-    <dd> {{ =pkg.name }} </dd>
+    <dd>* {{ =pkg.name }} </dd>
     {{pass}}
-    <a href="../reload_module_packages/{{=module.name}}">Reload...</a>
+    <dd> <a href="../reload_module_packages/{{=module.name}}">Reload...</a></dd>
   <dt>Sources:</dt>
     {{ for src in sources: }}
-    <dd> {{ =src.name }} </dd>
+    <dd>* {{ =src.name }} </dd>
     {{pass}}
-    <a href="../add_source/{{=module.name}}">Add...</a>
+    <dd> <a href="../add_source/{{=module.name}}">Add...</a></dd>
   <dt>Upstream:</dt>
     {{ for up in upstreamse: }}
-    <dd> {{ =up.version }} </dd>
+    <dd>* {{ =up.version }} </dd>
     {{pass}}
-    <a href="../check_upstream/{{=module.name}}">Recheck...</a>
+    <dd> <a href="../check_upstream/{{=module.name}}">Recheck...</a></dd>
 </dl>
+</div>
 
 <hr>

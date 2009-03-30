@@ -80,3 +80,17 @@ table.sortable tbody tr.highlight td { background-color: #FFFF99; }
  .flash { margin: 0 auto; text-align: center; clear: both; border: 1px #000000; background-color: #FF5C1F; color: white; margin-top: 0.0em; margin-bottom: 1.0em; padding-top: 1.0em; padding-bottom: 1.0em; cursor: pointer; }
 div.error { background-color: red; color: white; padding: 3px}
  /* Footer */
+
+/* left column */
+#info dl {
+  margin-left:0;
+}
+#info dt, #wrap dt {
+  margin:0;
+  padding:0 0 5px 0;
+}
+#info dd, #wrap dd {
+  margin:0;
+  padding:3px 0 5px 16px;
+  border-top:1px dotted lightgray;
+}
