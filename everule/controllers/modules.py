@@ -169,7 +169,7 @@ def reload_module_packages():
     info = ""
     try:
         from applications.everule.modules.everest import evst_get_module_info
-        info = evst_get_module_info (mod)
+        info = evst_get_module_info (mname)
         (n, version, release) = info.split(',')
 
         if (len(version) > 0):
@@ -177,7 +177,7 @@ def reload_module_packages():
         if (len(release) > 0):
             db.modules[mid] = dict(release=release)
     except:
-        print "Cann't get fsmodule info for %s" % mod
+        print "Cann't get fsmodule info for %s" % mname
     
     redirect(URL(r=request, f='detail', args=[mname]))
 
