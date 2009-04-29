@@ -219,13 +219,15 @@ def check_upstream():
             message = T("Cann't import SourceURI")
 
         if suri:
+            subups = []
             query = (db.upstreamse.source_id == src['id'])
             rows = db(query).select (db.upstreamse.version)
             exists_ups = []
             for row in rows:
                 exists_ups.append (row['version'])
-            upstreamse = suri.get_upstream (exists_ups)
-            for up in upstreamse:
+            subups = suri.get_upstream (exists_ups)
+            upstreamse += subups
+            for up in subups:
                 db.upstreamse.insert (module_id = up['module_id'],
                                               source_id = up['source_id'],
                                               version = up['version'],

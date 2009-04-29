@@ -75,32 +75,37 @@ class SourceURI:
         
         return up_version
     
-    def check_and_add_upstream (self, src, ruri, version, check_sub = False):
-        ups = []
-        
+    def check_and_add_upstream (self, src, ruri, version, check_sub = False, exists_ups = []):
+        available = False
         src['version'] = version
-        uri = self.parse_uri (ruri, src)
-        print "Testing upstream: %s" % uri
-        if self.remote_available (uri):
-            ups.append (self.new_upstream(src, uri))
-            added = True
-            if not check_sub:
-                return ups
-            
-            # check sub version
-            for v in range (1, 10):
+
+        if not version in exists_ups:
+            uri = self.parse_uri (ruri, src)
+
+            print "Testing upstream: %s" % uri
+            if self.remote_available (uri):
+                self.ups.append (self.new_upstream(src, uri))
+                available = True
+        else:
+            print "Pass exists upstream: %s" % version
+            available = True
+
+        # check sub version
+        if check_sub:
+            for v in range (0, 10):
                 sub_version = version + "." + str(v)
-                subups = self.check_and_add_upstream (src, ruri, sub_version, False)
-                if len (subups) > 0:
-                    ups += subups
-                else:
-                    src['version'] = version
+                if sub_version in exists_ups:
+                    print "Pass exists upstream: %s" % sub_version
+                    continue
+                if not self.check_and_add_upstream (src, ruri, sub_version, False) and v > 0:
                     break
         
-        return ups
+        src['version'] = version
+
+        return available
     
     def get_upstream (self, exists_ups = []):
-         ups = []
+         self.ups = []
          src = self._source
          
          while True:
@@ -108,15 +113,7 @@ class SourceURI:
              if (len(version) < 1):
                  break;
              
-             if version in exists_ups:
-                 print "Pass exists upstream: %s" % version
-                 src['version'] = version
-                 continue
-             
-             subups = self.check_and_add_upstream (src, self._uri, version, True)
-             if len (subups) > 0:
-                 ups += subups
-             else:
+             if not self.check_and_add_upstream (src, self._uri, version, True, exists_ups):
                  break
          
-         return ups
+         return self.ups
