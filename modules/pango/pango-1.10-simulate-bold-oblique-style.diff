@@ -1,0 +1,116 @@
+--- pango-1.10.0/pango/pangofc-fontmap.c	2005-07-23 06:38:26.000000000 +0800
++++ pango/pangofc-fontmap.c	2005-09-30 17:29:33.000000000 +0800
+@@ -83,6 +83,8 @@ struct _PangoFcFace
+ 
+   PangoFcFamily *family;
+   char *style;
++
++  gboolean fake;
+ };
+ 
+ struct _PangoFcFamily
+@@ -1671,7 +1673,7 @@ pango_fc_face_describe (PangoFontFace *f
+   FcPattern *match_pattern;
+   FcPattern *result_pattern;
+ 
+-  if (is_alias_family (fcfamily->family_name))
++  if (fcface->fake)
+     {
+       if (strcmp (fcface->style, "Regular") == 0)
+ 	return make_alias_description (fcfamily, FALSE, FALSE);
+@@ -1851,11 +1853,13 @@ pango_fc_face_get_type (void)
+  */
+ static PangoFcFace *
+ create_face (PangoFcFamily *fcfamily,
+-	     const char     *style)
++	     const char     *style,
++	     gboolean       fake)
+ {
+   PangoFcFace *face = g_object_new (PANGO_FC_TYPE_FACE, NULL);
+   face->style = g_strdup (style);
+   face->family = fcfamily;
++  face->fake = fake;
+ 
+   return face;
+ }
+@@ -1880,24 +1884,52 @@ pango_fc_family_list_faces (PangoFontFam
+ 	  fcfamily->faces = g_new (PangoFcFace *, fcfamily->n_faces);
+ 
+ 	  i = 0;
+-	  fcfamily->faces[i++] = create_face (fcfamily, "Regular");
+-	  fcfamily->faces[i++] = create_face (fcfamily, "Bold");
+-	  fcfamily->faces[i++] = create_face (fcfamily, "Italic");
+-	  fcfamily->faces[i++] = create_face (fcfamily, "Bold Italic");
++	  fcfamily->faces[i++] = create_face (fcfamily, "Regular", TRUE);
++	  fcfamily->faces[i++] = create_face (fcfamily, "Bold", TRUE);
++	  fcfamily->faces[i++] = create_face (fcfamily, "Italic", TRUE);
++	  fcfamily->faces[i++] = create_face (fcfamily, "Bold Italic", TRUE);
+ 	}
+       else
+ 	{
+-	  FcObjectSet *os = FcObjectSetBuild (FC_STYLE, NULL);
++	  FcObjectSet *os = FcObjectSetBuild (FC_STYLE, FC_WEIGHT, FC_SLANT, NULL);
+ 	  FcPattern *pat = FcPatternBuild (NULL, 
+ 					   FC_FAMILY, FcTypeString, fcfamily->family_name,
+ 					   NULL);
+-      
++	  gboolean style_table [4] = { FALSE, FALSE, FALSE, FALSE };
++	  gint num_fake_faces = 0;
++
+ 	  fontset = FcFontList (NULL, pat, os);
+       
+ 	  FcPatternDestroy (pat);
+ 	  FcObjectSetDestroy (os);
+-      
+-	  fcfamily->n_faces = fontset->nfont;
++
++	  for (i = 0; i < fontset->nfont; i++)
++	    {
++	      int weight, slant;
++
++	      if (FcPatternGetInteger(fontset->fonts[i], FC_WEIGHT, 0, &weight) != FcResultMatch)
++		weight = FC_WEIGHT_MEDIUM;
++
++	      if (FcPatternGetInteger(fontset->fonts[i], FC_SLANT, 0, &slant) != FcResultMatch)
++		slant = FC_SLANT_ROMAN;
++
++	      if (weight <= FC_WEIGHT_MEDIUM && slant < FC_SLANT_ITALIC)
++		style_table[0] = FcTrue;
++	      else if (weight <= FC_WEIGHT_MEDIUM && slant >= FC_SLANT_ITALIC)
++		style_table[1] = FcTrue;
++	      else if (weight > FC_WEIGHT_MEDIUM && slant < FC_SLANT_ITALIC)
++		style_table[2] = FcTrue;
++	      else if (weight > FC_WEIGHT_MEDIUM && slant >= FC_SLANT_ITALIC)
++		style_table[3] = FcTrue;
++	    }
++
++     	  for (i = 1 ; i < 4 ; i++)
++	    {
++	      if (!style_table[i])
++		num_fake_faces++;
++	    }
++
++	  fcfamily->n_faces = fontset->nfont + num_fake_faces;
+ 	  fcfamily->faces = g_new (PangoFcFace *, fcfamily->n_faces);
+ 	  
+ 	  for (i = 0; i < fontset->nfont; i++)
+@@ -1909,9 +1941,18 @@ pango_fc_family_list_faces (PangoFontFam
+ 	      if (res != FcResultMatch)
+ 		s = "Regular";
+ 
+-	      fcfamily->faces[i] = create_face (fcfamily, s);
++	      fcfamily->faces[i] = create_face (fcfamily, s, FALSE);
+ 	    }
+ 
++	  if (num_fake_faces) {
++	    if (!style_table[1])
++	      fcfamily->faces[i++] = create_face (fcfamily, "Italic", TRUE);
++	    if (!style_table[2])
++	      fcfamily->faces[i++] = create_face (fcfamily, "Bold", TRUE);
++	    if (!style_table[3])
++	      fcfamily->faces[i++] = create_face (fcfamily, "Bold Italic", TRUE);
++	  }
++
+ 	  FcFontSetDestroy (fontset);
+ 	}
+     }
