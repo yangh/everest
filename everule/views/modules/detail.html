@@ -21,7 +21,11 @@
     {{ for up in upstreamse: }}
     <dd>* {{ =up.version }} </dd>
     {{pass}}
+    {{ if module.can_check_upstream: }}
     <dd> <a href="../check_upstream/{{=module.name}}">Recheck...</a></dd>
+    {{ else: }}
+    <dd> ...</dd>
+    {{ pass }}
 </dl>
 </div>
 

@@ -64,7 +64,7 @@ def detail():
     
     mod = results[0]
     
-    print "Module for detail %s" % mod
+    #print "Module for detail %s" % mod
     
     module = mod
     query = (db.packages.module_id == mod['id'])
@@ -72,6 +72,14 @@ def detail():
 
     query = (db.sources.module_id == mod['id'])
     sources = db (query).select (db.sources.ALL)
+
+    # Mark modules for check upstream
+    can_check_upstream = False
+    for src in sources:
+        if src['auto_check_upstream']:
+            can_check_upstream = True
+            break
+    module['can_check_upstream'] = can_check_upstream
 
     query = (db.upstreamse.module_id == mod['id'])
     upstreamse = db (query).select (db.upstreamse.ALL)
@@ -99,8 +107,7 @@ def get_fsmodule_info():
     try:
         from applications.everule.modules.everest import evst_get_module_info
         info = evst_get_module_info (mod)
-        #info = "vte,0.17.4,4"
-        print info
+        #print info
     except:
         print "Cann't get fsmodule info for %s" % mod
     
@@ -121,10 +128,9 @@ def add_module():
     
     dbmods = db().select (db.modules.name)
     for m in dbmods:
-        print "Check if %s in fsmods" % m['name']
         if m['name'] in fsmods:
             fsmods.remove(m['name'])
-            print "Remove %s from fsmods" % m['name']
+            #print "Remove %s from fsmods" % m['name']
     
     return dict (form = form, modules = modules, fsmods = fsmods)
 
@@ -160,14 +166,6 @@ def reload_module_packages():
 
 def check_upstream():
     uri=''
-    
-#    src = {}
-#    src['name'] = 'glib'
-#    src['version'] = '2.18.2'
-#    src['mversion'] = '2.18'
-#    src['tarball'] = 'tar.bz2'
-#    src['uri'] =  'http://ftp.gnome.org/pub/GNOME/sources/%{name}/%{mversion}/%{name}-%{version}.%{tarball}'
-    
     upstreamse = []
     message = "Check for upstream..."
     
@@ -179,7 +177,7 @@ def check_upstream():
         if len (rows) > 0:
             mname = request.args[0]
             mid = rows[0]['id']
-            print "check up for %s, %s" % (mname, mid)
+            print "Checking upstream for module: %s, id: %s" % (mname, mid)
             check_for_module = True
             query = query & (db.sources.module_id == mid)
     
@@ -221,17 +219,18 @@ def check_upstream():
             message = T("Cann't import SourceURI")
 
         if suri:
-            upstreamse = suri.get_upstream ()
+            query = (db.upstreamse.source_id == src['id'])
+            rows = db(query).select (db.upstreamse.version)
+            exists_ups = []
+            for row in rows:
+                exists_ups.append (row['version'])
+            upstreamse = suri.get_upstream (exists_ups)
             for up in upstreamse:
-                query = (db.upstreamse.source_id == up['source_id']) \
-                            & (db.upstreamse.version == up['version'])
-                matches = db (query).select (db.upstreamse.ALL)
-                if (len (matches)) == 0:
-                    db.upstreamse.insert (module_id = up['module_id'],
-                                                  source_id = up['source_id'],
-                                                  version = up['version'],
-                                                  uri = up['uri'],
-                                                  timestamp = up['timestamp'])
+                db.upstreamse.insert (module_id = up['module_id'],
+                                              source_id = up['source_id'],
+                                              version = up['version'],
+                                              uri = up['uri'],
+                                              timestamp = up['timestamp'])
     if check_for_module:
         redirect (URL(r=request, f='detail', args=[mname,]))
     

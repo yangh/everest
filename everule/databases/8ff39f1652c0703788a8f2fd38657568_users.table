@@ -1,13 +1,13 @@
 (dp1
-S'name'
+S'id'
 p2
-S'CHAR(32)'
+S'INTEGER PRIMARY KEY AUTOINCREMENT'
 p3
 sS'fullname'
 p4
 S'CHAR(32)'
 p5
-sS'email'
+sS'name'
 p6
 S'CHAR(32)'
 p7
@@ -15,8 +15,8 @@ sS'rule'
 p8
 S'REFERENCES rules(id) ON DELETE CASCADE'
 p9
-sS'id'
+sS'email'
 p10
-S'INTEGER PRIMARY KEY AUTOINCREMENT'
+S'CHAR(32)'
 p11
 s.

@@ -9,7 +9,7 @@ except:
 def evst_get_modules ():
     mods = []
     mdir = EverestHome + '/modules'
-    print mdir
+    #print mdir
     for f in os.listdir (mdir):
         dir = mdir + '/' + f
         if os.path.isdir (dir) and os.access (dir + '/' + f + '.spec', os.F_OK) :
