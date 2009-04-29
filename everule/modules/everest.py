@@ -20,6 +20,9 @@ def evst_get_modules ():
 def evst_get_module_path ():
     return EverestHome + "/modules/"
 
+def evst_get_source_path ():
+    return EverestHome + "/sources/"
+
 def evst_get_module_info (fsmod = None):
     info = ""
     if fsmod is None:

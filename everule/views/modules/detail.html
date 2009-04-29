@@ -1,5 +1,28 @@
 {{extend 'layout.html'}}
 
+<script type="text/javascript">
+<!--
+
+function UpdateUpstreamInfo (msg) {
+    values = msg.split(":")
+    
+    if (values.length < 2) {
+        return
+    }
+    
+    id = 'download_status' + values[0]
+    info = values[1]
+    stlink = document.getElementById(id)
+}
+
+function CallUpstreamMethod(url) {
+    $.ajax ({type: "GET", url: url, data: "", success: UpdateUpstreamInfo});
+    
+    return false;
+}
+
+//--></script>
+
 <div id="info">
 <h1>{{=module.name}} detail info</h1>
 
@@ -19,7 +42,11 @@
     <dd> <a href="../add_source/{{=module.name}}">Add...</a></dd>
   <dt>Upstream:</dt>
     {{ for up in upstreamse: }}
-    <dd>* {{ =up.version }} </dd>
+    <dd>* {{ =up.version }} 
+      {{ if up.status == '': }}
+          <a id='download_status{{ = up.id }}' href='#' onClick="CallUpstreamMethod('{{ =URL(r=request, f='upstream_method', args =['startdownload', up.id]) }}'); return false;"> Start download</a>
+      {{ pass }}
+    </dd>
     {{pass}}
     {{ if module.can_check_upstream: }}
     <dd> <a href="../check_upstream/{{=module.name}}">Recheck...</a></dd>

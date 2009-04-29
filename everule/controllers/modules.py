@@ -100,10 +100,12 @@ def add_user():
 
 def get_fsmodule_info():
     info = ""
-    if len (request.args) == 0:
+    mod = ""
+    if len (request.args) > 0:
+        mod = request.args[0]
+    else:
         return info
     
-    mod = request.args[0]
     try:
         from applications.everule.modules.everest import evst_get_module_info
         info = evst_get_module_info (mod)
@@ -146,6 +148,7 @@ def reload_module_packages():
     else:
         redirect(URL(r=request, f='index'))
     
+    # Load package list
     pkgs = []
     try:
         from applications.everule.modules.everest import evst_get_module_packages
@@ -161,6 +164,20 @@ def reload_module_packages():
     for p in pkgs:
         if p not in opkgs:
             db.packages.insert (module_id = mid, name = p)
+    
+    # Update version/release
+    info = ""
+    try:
+        from applications.everule.modules.everest import evst_get_module_info
+        info = evst_get_module_info (mod)
+        (n, version, release) = info.split(',')
+
+        if (len(version) > 0):
+            db.modules[mid] = dict(version=version)
+        if (len(release) > 0):
+            db.modules[mid] = dict(release=release)
+    except:
+        print "Cann't get fsmodule info for %s" % mod
     
     redirect(URL(r=request, f='detail', args=[mname]))
 
@@ -237,3 +254,15 @@ def check_upstream():
         redirect (URL(r=request, f='detail', args=[mname,]))
     
     return dict (message=message, upstreamse = upstreamse)
+
+def upstream_method():
+    if len(request.args) < 2:
+        return ""
+    method = request.args[0]
+    id = request.args[1]
+    
+    if method == 'startdownload':
+        db.upstreamse[id] = dict (status='pending')
+        return id + ":pending"
+
+    return ""

@@ -59,7 +59,8 @@ db.define_table ('upstreamse',
                        SQLField ('source_id', db.sources),
                        SQLField ('version'),
                        SQLField ('uri', 'text'),
-                       SQLField ('timestamp', 'datetime')
+                       SQLField ('timestamp', 'datetime'),
+                       SQLField ('status', comment='pending, downloading, downloaded')
                        )
 
 db.users.name.requires = [IS_NOT_EMPTY(), IS_NOT_IN_DB(db,'users.name')]

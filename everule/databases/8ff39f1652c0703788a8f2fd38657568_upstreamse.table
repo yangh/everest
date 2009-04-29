@@ -1,26 +1,30 @@
 (dp1
-S'timestamp'
+S'status'
 p2
-S'TIMESTAMP'
-p3
-sS'uri'
-p4
-S'TEXT'
-p5
-sS'version'
-p6
 S'CHAR(32)'
+p3
+sS'timestamp'
+p4
+S'TIMESTAMP'
+p5
+sS'uri'
+p6
+S'TEXT'
 p7
-sS'source_id'
+sS'version'
 p8
-S'REFERENCES sources(id) ON DELETE CASCADE'
+S'CHAR(32)'
 p9
-sS'module_id'
+sS'source_id'
 p10
-S'REFERENCES modules(id) ON DELETE CASCADE'
+S'REFERENCES sources(id) ON DELETE CASCADE'
 p11
-sS'id'
+sS'module_id'
 p12
-S'INTEGER PRIMARY KEY AUTOINCREMENT'
+S'REFERENCES modules(id) ON DELETE CASCADE'
 p13
+sS'id'
+p14
+S'INTEGER PRIMARY KEY AUTOINCREMENT'
+p15
 s.

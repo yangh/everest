@@ -2,7 +2,7 @@
 
 Summary: A library of handy utility functions
 Name: glib2
-Version: 2.18.3
+Version: 2.20.0
 Release: 1 
 License: LGPL
 Group: System Environment/Libraries
@@ -44,7 +44,6 @@ version 2 of the GLib library.
 %setup -q -n glib-%{version}
 #%patch0 -p1 -b .libdir
 %patch1 -p0
-%patch2 -p1
 %build
 
 for i in config.guess config.sub ; do
